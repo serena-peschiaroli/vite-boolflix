@@ -9,11 +9,25 @@ export default {
       store,
     };
   },
+  created(){
+    this.store.loading = true;
+    axios.get(this.store.apiUrl).then((resp) => {
+      this.store.movies = resp.data.results;
+      this.store.loading = false;
+    });
+
+  },
+  components: {
+    AppHeader,
+    
+}
 }
 
 </script>
 
 <template>
+  <AppHeader/>
+  
   
     
 </template>
