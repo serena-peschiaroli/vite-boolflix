@@ -1,11 +1,21 @@
 <script>
+export default {
+
+    //props
+    props: {
+        movies: Array,
+    }
+
+}
 </script>
 
 <template>
-    <div class="col" v-for="movie in store.movies" key:="movie.id">
+    <div class="col" v-for="movie in movies" :key="movie.id">
 
     
         <div class="card">
+
+            <!-- //interpolazione -->
             <p> Titolo: {{ movie.title }}</p>
             <p> Titolo originale: {{ movie.original_title  }}</p>
             <p> Lingua: {{ movie.original_language  }}</p>
