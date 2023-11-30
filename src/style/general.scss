@@ -1,0 +1,16 @@
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+
+    .row {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        
+        .col {
+          width: calc(100% / 3)
+        }
+      }
+}

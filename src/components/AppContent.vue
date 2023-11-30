@@ -2,6 +2,7 @@
 import { continents, countries, languages } from 'countries-list'
 // Utils
 import { getEmojiFlag } from 'countries-list'
+import { convertRange } from '../utility'
 
 export default {
   // props
@@ -11,27 +12,36 @@ export default {
   },
   
   methods: {
-    getFlagEmoji(languageCode) {
-      
-      const normalizedLanguageCode = languageCode.toLowerCase();
+    getFlagEmoji(languageCode, item) {
+
+        const emojiMappings = {en: 'GB', it: 'IT', es: 'ES', de: 'DE', ja: 'JP', zh: 'CHN'};
+
+        const normalizedLanguageCode = languageCode.toLowerCase();
+        const countryCode = emojiMappings[normalizedLanguageCode.toUpperCase()];
+
+        return countryCode ? getEmojiFlag(countryCode) : (item && item.original_language) || 'Unknown';
+    },
+   
+    getPosterUrl(posterPath, size = 'w154') {
+      // url di base
+      const baseUrl = 'https://image.tmdb.org/t/p/';
+
+      // costruisci l'url intero
+      return `${baseUrl}${size}${posterPath}`;
+    },
+   
+
+    convertRating(rating) {
+      return convertRange(rating, [1, 10], [1, 5]);
+    },
+    getStarRating(item) {
+       const convertedRating = this.convertRating(item.vote_average);
 
       
-      if (normalizedLanguageCode === 'en') {
-        return getEmojiFlag('GB'); 
-      }else if (normalizedLanguageCode === 'it') {
-        return getEmojiFlag('IT')
-      }else if (normalizedLanguageCode === 'es') {
-        return getEmojiFlag("ES")
-      }else if (normalizedLanguageCode === 'de'){
-        return getEmojiFlag('DE')
-      }else if (normalizedLanguageCode=== 'jp') {
-        return getEmojiFlag('JP')
-      }else if (normalizedLanguageCode === 'zh') {
-        return getEmojiFlag('CHN')
-      }
-      
-      const countryCode = normalizedLanguageCode.toUpperCase();
-      return getEmojiFlag(countryCode) || movie.original_language; 
+      const clampedRating = Math.floor(convertedRating);
+
+      // ritorna un array che rappresenta le stelle
+      return Array.from({ length: clampedRating }, (_, index) => index < clampedRating ? 'fas fa-star' : 'far fa-star');
     }
   }
 }
@@ -44,11 +54,26 @@ export default {
 <template>
     <div class="col" v-for="item in items" :key="item.id">
         <div class="card">
-        <!-- //interpolazione -->
-        <p> Titolo: {{ item.title }}</p>
-        <p> Titolo originale: {{ item.original_title || item.original_name }}</p>
-        <p> Lingua: {{ item.original_language }} - {{ getFlagEmoji(item.original_language) }}</p>
-        <p> Voto: {{ item.vote_average }} </p>
+             <!-- tv/movie poster -->
+            <img :src="getPosterUrl(item.poster_path)" alt="Poster" />
+            <!-- //interpolazione -->
+            <p> Titolo: {{ item.title }}</p>
+            <p> Titolo originale: {{ item.original_title || item.original_name }}</p>
+            <p> Lingua: {{ item.original_language }} - {{ getFlagEmoji(item.original_language) }}</p>
+            <div class="star-rating">
+              <p> Rating: {{ Math.min(5, Math.max(1, Math.ceil(item.vote_average))) }}</p>
+                <i
+                    v-for="index in 5"
+                    :key="index"
+                    :class="{
+                    'fas fa-star': index < getStarRating(item.vote_average).length,
+                    'far fa-star': index >= getStarRating(item.vote_average).length}"
+
+                    
+                ></i>
+                
+                
+            </div>
         </div>
   </div>
 </template>
@@ -56,7 +81,22 @@ export default {
 
 <style lang="scss" scoped>
 
-.card {
-    border: 1px solid black;
+.col {
+      width: calc(100% / 3);
+      box-sizing: border-box; 
+      padding: 1rem; 
+    
+  
+  
+  .card {
+   
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+  }
+  .star-rating {
+    color: #ffc107; 
+    font-size: 1.5em; 
+  }
 }
 </style>
