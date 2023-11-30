@@ -65,27 +65,32 @@ checkMail()
 </script>
 
 <template>
+  
   <div class="container">
+  
     <AppHeader @search="handleSearch"/>
+    <h2 v-if="store.movies.length > 0">movies</h2>
     <div class="row">
-      <AppContent :items="store.movies" :mediaType="'movie'" v-if="store.movies.length > 0" />
+      <AppContent :items="store.movies" :mediaType="'movie'" />
     </div>
+    <h2 v-if="store.tvShows.length > 0">Tv shows</h2>
     <div class="row">
-      <AppContent :items="store.tvShows" :mediaType="'tv'" v-if="store.tvShows.length > 0" />
+      <AppContent :items="store.tvShows" :mediaType="'tv'"  />
     </div>
   </div>
 
-  
-  
-  
-  
-  
-  
+
     
 </template>
 
 <style lang="scss" scoped>
 @use "./style/general.scss";
+
+h2 {
+  color: red;
+  text-align: center;
+  padding: 0.5rem;
+}
 
 
 </style>

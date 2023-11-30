@@ -25,19 +25,34 @@ export default {
 </script>
 
 <template>
+
+    <header>
+
+   
     
-    <div class="logo">
-        logo here
-    </div>
-    <div class="search-bar">
-        <!-- Input legato a testo di ricerca. -->
-        <input v-model="searchText" placeholder="Cerca film..."/>
-        
-        <!-- gestore di eventi click collegato alla funzione search -->
-        <button @click="search"> Cerca </button>
-    </div>
+        <div class="logo">
+            <h1> BoolFlix </h1>
+        </div>
+        <div class="search-bar">
+            <!-- Input legato a testo di ricerca. -->
+            <input v-model="searchText" placeholder="Cerca film..."/>
+            
+            <!-- gestore di eventi click collegato alla funzione search -->
+            <button @click="search"> Cerca </button>
+        </div>
+    </header>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 1rem;
+    h1{
+        color: red;
+    }
+}
    
 </style>
