@@ -1,28 +1,62 @@
 <script>
+import { continents, countries, languages } from 'countries-list'
+// Utils
+import { getEmojiFlag } from 'countries-list'
+
 export default {
+  // props
+  props: {
+    items: Array,
+    mediaType: String,
+  },
+  
+  methods: {
+    getFlagEmoji(languageCode) {
+      
+      const normalizedLanguageCode = languageCode.toLowerCase();
 
-    //props
-    props: {
-        movies: Array,
+      
+      if (normalizedLanguageCode === 'en') {
+        return getEmojiFlag('GB'); 
+      }else if (normalizedLanguageCode === 'it') {
+        return getEmojiFlag('IT')
+      }else if (normalizedLanguageCode === 'es') {
+        return getEmojiFlag("ES")
+      }else if (normalizedLanguageCode === 'de'){
+        return getEmojiFlag('DE')
+      }else if (normalizedLanguageCode=== 'jp') {
+        return getEmojiFlag('JP')
+      }else if (normalizedLanguageCode === 'zh') {
+        return getEmojiFlag('CHN')
+      }
+      
+      const countryCode = normalizedLanguageCode.toUpperCase();
+      return getEmojiFlag(countryCode) || movie.original_language; 
     }
-
+  }
 }
+
+    
+
+
 </script>
 
 <template>
-    <div class="col" v-for="movie in movies" :key="movie.id">
-
-    
+    <div class="col" v-for="item in items" :key="item.id">
         <div class="card">
-
-            <!-- //interpolazione -->
-            <p> Titolo: {{ movie.title }}</p>
-            <p> Titolo originale: {{ movie.original_title  }}</p>
-            <p> Lingua: {{ movie.original_language  }}</p>
-            <p> Voto: {{ movie.vote_average }} </p>
+        <!-- //interpolazione -->
+        <p> Titolo: {{ item.title }}</p>
+        <p> Titolo originale: {{ item.original_title || item.original_name }}</p>
+        <p> Lingua: {{ item.original_language }} - {{ getFlagEmoji(item.original_language) }}</p>
+        <p> Voto: {{ item.vote_average }} </p>
         </div>
-    </div>
+  </div>
 </template>
 
-<script scoped>
-</script>
+
+<style lang="scss" scoped>
+
+.card {
+    border: 1px solid black;
+}
+</style>
