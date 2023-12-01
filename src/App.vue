@@ -85,6 +85,7 @@ checkMail()
 
 <style lang="scss" scoped>
 @use "./style/general.scss";
+@import "@fortawesome/fontawesome-free/css/all.css";
 
 h2 {
   color: red;

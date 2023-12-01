@@ -7,7 +7,7 @@ import { convertRange } from '../utility'
 export default {
   // props
   props: {
-    items: Array,
+    items: Object,
     mediaType: String,
   },
   data(){
@@ -36,18 +36,13 @@ export default {
     },
    
 
-    convertRating(rating) {
-      return convertRange(rating, [1, 10], [1, 5]);
-    },
-    getStarRating(item) {
-       const convertedRating = this.convertRating(item.vote_average);
-
-      
-      const clampedRating = Math.floor(convertedRating);
-
-      // ritorna un array che rappresenta le stelle
-      return Array.from({ length: clampedRating }, (_, index) => index < clampedRating ? 'fas fa-star' : 'far fa-star');
-    },
+    getRating(item){
+        
+        const rating = Math.ceil(item.vote_average / 2);
+        return rating;
+        
+    
+   },
     handleShowDetails() {
       this.showDetails = true;
     },
@@ -78,14 +73,11 @@ export default {
                         <p>{{ item.original_title || item.original_name }}</p>
                         <p>{{ item.original_language }} - {{ getFlagEmoji(item.original_language, item) }}</p>
                         <p>
-                        Voto:
+                        Voto: {{ getRating(item) }}
                         <i
-                            v-for="index in 5"
+                            v-for="index in 5" class="fa-star" :class=" index <= getRating(item) ? 'fa-solid' : 'fa-regular'"
                             :key="index"
-                            :class="{
-                            'fas fa-star': index < getStarRating(item).length,
-                            'far fa-star': index >= getStarRating(item).length
-                            }"
+                            
                         ></i>
                         </p>
                         <p>{{ item.overview }}</p>
@@ -99,6 +91,7 @@ export default {
 
 <style lang="scss" scoped>
 @use "../style/general.scss";
+@import "@fortawesome/fontawesome-free/css/all.css";
 
 .col {
    
@@ -124,7 +117,7 @@ export default {
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: black;
         border: 1px solid gray;
         box-sizing: border-box;
         opacity: 0;
