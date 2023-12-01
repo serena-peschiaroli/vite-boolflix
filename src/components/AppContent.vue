@@ -1,8 +1,9 @@
 <script>
-import { continents, countries, languages } from 'countries-list'
+
+
 // Utils
-import { getEmojiFlag } from 'countries-list'
-import { convertRange } from '../utility'
+
+import { getCountryCode, getCountryData, getCountryDataList, getEmojiFlag } from 'countries-list'
 
 export default {
   // props
@@ -13,19 +14,45 @@ export default {
   data(){
     return{
         showDetails: false,
+        emojiMappings: { en: 'GB', it: 'IT', es: 'ES', de: 'DE', ja: 'JP', zh: 'CHN' },
     };
   },
   
   methods: {
-    getFlagEmoji(languageCode, item) {
+    // getFlagEmoji(languageCode, item) {
+    //     console.log(languageCode, item)
 
-        const emojiMappings = {en: 'GB', it: 'IT', es: 'ES', de: 'DE', ja: 'JP', zh: 'CHN'};
+    //     const emojiMappings = {en: 'GB', it: 'IT', es: 'ES', de: 'DE', ja: 'JP', zh: 'CHN'};
 
-        const normalizedLanguageCode = languageCode.toLowerCase();
-        const countryCode = emojiMappings[normalizedLanguageCode.toUpperCase()];
+    //     const normalizedLanguageCode = languageCode.toLowerCase();
+    //     console.log(normalizedLanguageCode)
+    //     const countryCode = emojiMappings[normalizedLanguageCode.toUpperCase()];
+    //     console.log('Country Code:', countryCode);
+    //     const emojiFlag = countryCode ? getEmojiFlag(countryCode) : (item && item.original_language) || 'Unknown';
 
-        return countryCode ? getEmojiFlag(countryCode) : (item && item.original_language) || 'Unknown';
-    },
+    //     console.log('Emoji Flag:', emojiFlag);
+
+    //     return emojiFlag;
+    // },
+    getCountryCode(languageCode) {
+        return (languageCode && languageCode in this.emojiMappings) ? this.emojiMappings[languageCode] : 'Unknown';
+  },
+
+   getFlagEmoji(languageCode, item) {
+    const countryCode = this.getCountryCode(languageCode);
+    console.log(countryCode);
+
+    if (countryCode) {
+      
+        const emojiFlag = getEmojiFlag(countryCode);
+        return emojiFlag;
+    }
+    console.log(emojiFlag)
+
+    return (item && item.original_language) || 'Unknown';
+  },
+
+    
    
     getPosterUrl(posterPath, size = 'w342') {
       // url di base
@@ -40,9 +67,7 @@ export default {
         
         const rating = Math.ceil(item.vote_average / 2);
         return rating;
-        
-    
-   },
+    },
     handleShowDetails() {
       this.showDetails = true;
     },
@@ -50,6 +75,7 @@ export default {
     handleHideDetails() {
       this.showDetails = false;
     },
+    
   }
 }
 
@@ -69,10 +95,10 @@ export default {
                     <img v-if="!showDetails" :src="getPosterUrl(item.poster_path, 'w342')" alt="Poster" />
                     <div v-if="showDetails" class="card-details">
                         <!-- infos -->
-                        <p>{{ item.title }}</p>
-                        <p>{{ item.original_title || item.original_name }}</p>
+                        <p class="title" v-if="item.title === item.original_title" :class="{ hidden: item.title === item.original_title }">{{ item.title }}</p>
+                        <p class="original-title">{{ item.original_title || item.original_name }}</p>
                         <p>{{ item.original_language }} - {{ getFlagEmoji(item.original_language, item) }}</p>
-                        <p>
+                        <p class="rating">
                         Voto: {{ getRating(item) }}
                         <i
                             v-for="index in 5" class="fa-star" :class=" index <= getRating(item) ? 'fa-solid' : 'fa-regular'"
@@ -81,7 +107,12 @@ export default {
                         ></i>
                         </p>
                         <p>{{ item.overview }}</p>
+                        <button> More</button>
                     </div>
+                </div>
+                <div class="card-more">
+                    
+
                 </div>
 
         </div>
@@ -98,14 +129,23 @@ export default {
 
     .card {
         position: relative;
-        width: 200px;
-        height: 300px ;
+        width: 250px;
+        height: 350px ;
         padding: 1rem;
         background-color: black;
         border: 1px solid whitesmoke;
         img {
             width: 100%;
             height: 100%;
+        }
+        .title, .original-title {
+            font-weight: bold;
+           
+        }
+        p{
+            margin-bottom: 5px;
+            line-height: 1.2 ;
+            text-align: center;
         }
         
     }
@@ -122,6 +162,8 @@ export default {
         box-sizing: border-box;
         opacity: 0;
         transition: opacity 0.3s ease;
+        padding: 1rem;
+        overflow-y: scroll;
 
         &:hover {
         opacity: 1;
@@ -136,7 +178,9 @@ export default {
 }
 
 
-
+.hidden {
+    display: none;
+}
 
 
 
