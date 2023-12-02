@@ -107,11 +107,16 @@ export default {
                         ></i>
                         </p>
                         <p>{{ item.overview }}</p>
-                        <button> More</button>
+                        <button @click="showMore"> More</button>
                     </div>
                 </div>
-                <div class="card-more">
-                    
+                <div class="card-more hidden">
+                    <p> Generi: {{ resultsObj.genre.name }}</p>
+                    <ul> Cast: 
+                        <li> {{ result.Obj.credits.cast.name }}</li>
+                    </ul>
+
+
 
                 </div>
 

@@ -52,12 +52,35 @@ checkMail()
           this.store.movies = movieResp.data.results;
           this.store.tvShows = tvResp.data.results;
           console.log(movieResp.data.results, tvResp.data.results);
+          if (this.store.movies.length > 0) {
+            this.store.apiId = this.store.movies[0].id;
+          } else if (this.store.tvShows.length > 0) {
+            this.store.apiId = this.store.tvShows[0].id;
+          }
           this.store.loading = false;
-        })
+
+
+        });
         
           
       
-    },
+      },
+      showMore() {
+        const idApiUrl = `${this.store.baseApiUrlById}${this.store.apiId}?api_key=${this.store.api_key}`;
+
+        // Imposta lo stato di caricamento a true per indicare che la richiesta è in corso.
+        this.store.loading = true;
+
+        // Richiesta per i dettagli aggiuntivi basati sull'ID
+        axios.get(idApiUrl)
+          .then((apiIdResp) => {
+            // Aggiorna la lista dei risultati con i dettagli aggiuntivi
+            this.store.results = apiIdResp.data.results;
+            this.store.loading = false;
+          })
+
+      }
+
   },
 
 }
