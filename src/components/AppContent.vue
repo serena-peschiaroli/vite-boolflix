@@ -10,12 +10,16 @@ export default {
   props: {
     items: Object,
     mediaType: String,
+    contents: Object,
+    
   },
   emits: ['showMore'],
   data(){
     return{
         showDetails: false,
         emojiMappings: { en: 'GB', it: 'IT', es: 'ES', de: 'DE', ja: 'JP', zh: 'CHN' },
+        selectedItemIds: [],
+        showMoreDetails : false,
     };
   },
   
@@ -41,14 +45,14 @@ export default {
 
    getFlagEmoji(languageCode, item) {
     const countryCode = this.getCountryCode(languageCode);
-    console.log(countryCode);
+    
 
     if (countryCode) {
       
         const emojiFlag = getEmojiFlag(countryCode);
         return emojiFlag;
     }
-    console.log(emojiFlag)
+    
 
     return (item && item.original_language) || 'Unknown';
   },
@@ -78,14 +82,24 @@ export default {
     },
 
     showMore(item) {
-      console.log("clicked", item.id)
+      console.log("clicked", item, item.id)
       //emit
 
       if (item && item.id) {
-        this.$emit('showMore', item.id)
+        this.selectedItemIds.push(item.id);
+        this.$emit('showMore',{item, mediaType: this.mediaType })
       }
      
-    }
+    },
+    handleShowMoreDetails() {
+      this.showMoreDetails = true;
+      this.showDetails = false;
+    },
+
+    handleHideMoreDetails() {
+      this.showMoreDetails = false;
+      this.showDetails = true; 
+    },
    
     
     
@@ -110,7 +124,7 @@ export default {
                         <!-- infos -->
                         <p class="title" v-if="item.title === item.original_title" :class="{ hidden: item.title === item.original_title }">{{ item.title }}</p>
                         <p class="original-title">{{ item.original_title || item.original_name }}</p>
-                        <p>{{ item.original_language }} - {{ getFlagEmoji(item.original_language, item) }}</p>
+                        <p>{{ item.original_laanguage }} - {{ getFlagEmoji(item.original_language, item) }}</p>
                         <p class="rating">
                         Voto: {{ getRating(item) }}
                         <i
@@ -122,17 +136,23 @@ export default {
                         <p>{{ item.overview }}</p>
                         <p> {{ item.id }} </p>
                         <button @click="showMore(item)"> More</button>
+                            <!-- <div  v-if="!showMoreDetails" class="card-more hidden">
+                              <ul> Generi: 
+                                <li v-for="(genre, index) in contents.genres" :key="index"> {{ genres.name }} </li>
+          
+
+
+                              </ul>
+                              <ul> Cast: 
+                                  <li v-for="(castMember, index) in contents.credits.cast.slice(0 , 5)" :key="index"> {{  castMember.name }}</li>
+                              </ul>
+
+
+
+                            </div> -->
                     </div>
                 </div>
-                <!-- <div class="card-more hidden">
-                    <p> Generi: {{ resultsObj.genre.name }}</p>
-                    <ul> Cast: 
-                        <li> {{ result.Obj.credits.cast.name }}</li>
-                    </ul>
-
-
-
-                </div> -->
+                
 
         </div>
    
