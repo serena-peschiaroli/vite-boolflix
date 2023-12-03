@@ -11,6 +11,7 @@ export default {
     items: Object,
     mediaType: String,
   },
+  emits: ['showMore'],
   data(){
     return{
         showDetails: false,
@@ -75,6 +76,18 @@ export default {
     handleHideDetails() {
       this.showDetails = false;
     },
+
+    showMore(item) {
+      console.log("clicked", item.id)
+      //emit
+
+      if (item && item.id) {
+        this.$emit('showMore', item.id)
+      }
+     
+    }
+   
+    
     
   }
 }
@@ -107,10 +120,11 @@ export default {
                         ></i>
                         </p>
                         <p>{{ item.overview }}</p>
-                        <button @click="showMore"> More</button>
+                        <p> {{ item.id }} </p>
+                        <button @click="showMore(item)"> More</button>
                     </div>
                 </div>
-                <div class="card-more hidden">
+                <!-- <div class="card-more hidden">
                     <p> Generi: {{ resultsObj.genre.name }}</p>
                     <ul> Cast: 
                         <li> {{ result.Obj.credits.cast.name }}</li>
@@ -118,7 +132,7 @@ export default {
 
 
 
-                </div>
+                </div> -->
 
         </div>
    
